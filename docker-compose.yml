@@ -1,18 +1,32 @@
-version: '3'
+
+version: '3.4'
 services:
   web:
-    build: .
+    build:
+      context: .
+      target: python
     volumes:
       - .:/app
     environment:
       - FLASK_APP=index.py
     ports:
-      - "5000:5000"
+      - 127.0.0.1:5000:5000
     command: "poetry run flask run --host=0.0.0.0"
   note:
-    build: .
+    build:
+      context: .
+      target: python
     volumes:
       - .:/app
     ports:
-      - "8888:8888"
-    command: "poetry run jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root  --NotebookApp.token=''"
+      - 127.0.0.1:8888:8888
+    command: "poetry run jupyter notebook --no-browser --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.disable_check_xsrf=True"
+  code:
+    build:
+      context: .
+      target: code-server
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - ./:/app
+    entrypoint: "code-server --auth none --bind-addr=0.0.0.0:8080 /app"
