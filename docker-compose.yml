@@ -1,0 +1,18 @@
+version: '3'
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_APP=index.py
+    ports:
+      - "5000:5000"
+    command: "poetry run flask run --host=0.0.0.0"
+  note:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8888:8888"
+    command: "poetry run jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root  --NotebookApp.token=''"
